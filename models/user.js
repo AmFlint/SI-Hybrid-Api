@@ -31,6 +31,14 @@ module.exports = (sequelize, DataTypes) => {
         len: {
           args: [4, 30],
           msg: 'Username length must be at least 4 characters and at most 30.'
+        },
+        isUnique: function (username) {
+          User.find({ where: {username} })
+            .then(function (u) { // This gets called
+              if(u){
+                throw new Error({error:[{message:'Username address already in use!'}]});
+              }
+            });
         }
       }
     },
@@ -39,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         len: {
-          args: [6, 150],
+          args: [4, 150],
           msg: 'Password length must be between 6 characters and 150'
         }
       }

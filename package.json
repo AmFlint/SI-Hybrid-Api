@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "migrate": "node_modules/.bin/sequelize db:migrate",
+    "revert": "node_modules/.bin/sequelize db:migrate:undo"
   },
   "dependencies": {
     "body-parser": "~1.17.1",

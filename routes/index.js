@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/test', function(req, res, next) {
-  res.send('testing');
+  res.send('testing mamz');
 });
 
 module.exports = router;

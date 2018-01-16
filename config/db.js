@@ -3,7 +3,7 @@ const Sequelize = require('sequelize');
 // configure database connection according to environment variables
 const username = process.DATABASE_USERNAME || 'urbex';
 const password = process.DATABASE_PASSWORD || 'root';
-const host = process.DATABASE_HOST || 'hybrid-database';
+const host = process.DATABASE_HOST || 'urbex-database';
 const databaseName = process.DATABASE_NAME || 'urbex';
 
 

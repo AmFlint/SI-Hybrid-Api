@@ -13,7 +13,7 @@ const User = sequelize.define('users', {
   }
 });
 
-force: true will drop the table if it already exists
+// force: true will drop the table if it already exists
 User.sync({force: true}).then(() => {
   // Table created
   return User.create({

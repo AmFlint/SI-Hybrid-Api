@@ -1,6 +1,10 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../config/db');
+const md5 = require('md5');
 
+const Post = require('./Post');
+
+// const Post = require('./Post');
 const User = sequelize.define('users', {
   email: {
     type: Sequelize.STRING(50),
@@ -47,7 +51,18 @@ const User = sequelize.define('users', {
   }
 });
 
+
+
+// Add key userId to post entity for relationships
+Post.belongsTo(sequelize.models.users);
+User.hasOne(sequelize.models.posts);
+
 // force: true will drop the table if it already exists
-User.sync();
+User.sync({force: true})
+  .then(() => {
+    // User.findOrCreate({where: {username: 'admin'}, defaults: {email: 'admin@admin.fr', password: md5('root')}})
+  });
+
+Post.sync({force: true});
 
 module.exports = User;

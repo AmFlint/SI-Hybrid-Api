@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "urbex",
+    "password": "root",
+    "database": "urbex",
+    "host": "urbex-database",
+    "dialect": "mysql"
+  }
+}

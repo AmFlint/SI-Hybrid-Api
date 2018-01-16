@@ -1,16 +1,16 @@
 var express = require('express');
 var router = express.Router();
-const sequelize = require('../config/db');
-const User = require('../models/User');
+const models = require('../models');
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  User.findAll().then(users => {
-    res.send(users);
-  });
-});
-
-router.get('/test', function(req, res, next) {
-  res.send('testing mam');
+  models.user.create({email: 'test'})
+    .then(user => {
+      res.send(user);
+    })
+    .catch(err => {
+      res.status(400).send(err);
+    })
 });
 
 module.exports = router;

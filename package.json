@@ -1,5 +1,5 @@
 {
-  "name": "myapp",
+  "name": "urbex",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -13,6 +13,7 @@
     "express-validator": "^4.3.0",
     "jade": "~1.11.0",
     "morgan": "~1.8.1",
+    "mysql2": "^1.5.1",
     "nodemon": "^1.14.11",
     "sequelize": "^4.31.2",
     "serve-favicon": "~2.4.2"

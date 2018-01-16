@@ -10,12 +10,12 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING(50),
-        unique: 'compositeIndex',
+        unique: true,
         allowNull: false
       },
       username: {
         type: Sequelize.STRING(30),
-        unique: 'compositeIndex',
+        unique: true,
         allowNull: false
       },
       password: {

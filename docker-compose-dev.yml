@@ -9,6 +9,8 @@ services:
       - .:/home/node/api
     working_dir: /home/node/api
     command: npm run start
+    depends_on:
+      - urbex-database
     links:
       - urbex-database
 

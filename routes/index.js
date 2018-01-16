@@ -9,13 +9,9 @@ const User = models.user;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  models.user.create({email: 'test'})
-    .then(user => {
-      res.send(user);
-    })
-    .catch(err => {
-      res.status(400).send(err);
-    })
+  const token = req.get('X-Access-Token');
+  const decoded = jwt.verify(token, secret);
+  res.json({token: decoded});
 });
 
 /**
@@ -45,11 +41,7 @@ router.post('/login', function(req, res) {
       }
 
       // Generate token valid for one hour, holding user name and id
-      const token = jwt.sign({
-        exp: Math.floor(Date.now() / 1000) + (60 * 60),
-        username: user.username,
-        userId: user.id
-      }, secret);
+      const token = generateToken(jwt, user, secret);
 
       // Create response object with user's attributes and token
       const response = Object.assign({}, {token}, user.get());
@@ -61,5 +53,48 @@ router.post('/login', function(req, res) {
     return md5(password) === dbPassword;
   }
 });
+
+router.post('/signup', function(req, res) {
+  const { username, password, email, passwordVerification } = req.body;
+
+  // check passwords
+  if (password !== passwordVerification) {
+    res.status(400).json({error: 400, message: 'Password and verification password are different.'});
+  }
+
+  // USer object to create
+  const user = {
+    username,
+    password: md5(password),
+    email
+  };
+  // Try to create user, if validation fails, code 400 and return errors
+  User.create(user)
+    .then(user => {
+      // If user is created, format exportable user's attributes
+      const exportableUser = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        createdAt: user.createdAt
+      };
+      // Generate token for new user
+      const token = generateToken(jwt, user, secret);
+      // format response
+      const response = Object.assign({}, exportableUser, {token});
+      res.json(response);
+    })
+    .catch(error => {
+      res.status(400).json(error);
+    })
+});
+
+function generateToken(jwt, user, secret) {
+  return jwt.sign({
+    exp: Math.floor(Date.now() / 1000) + (60 * 60),
+    username: user.username,
+    userId: user.id
+  }, secret);
+}
 
 module.exports = router;

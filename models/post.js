@@ -5,14 +5,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-
+        notEmpty: {
+          msg: 'Title can\' be empty.'
+        }
       }
     },
     content: {
       type: DataTypes.TEXT,
       allowNull: false,
       validate: {
-
+        notEmpty: {
+          msg: 'content can\' be empty.'
+        }
       }
     },
     location: {
@@ -20,8 +24,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         len: {
-          args: [20, 150],
+          args: [5, 150],
           msg: 'Please fill in a location for the place you are sharing.'
+        },
+        notEmpty: {
+          msg: 'Location can\' be empty.'
         }
       }
     },
@@ -38,6 +45,31 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: {
         allowNull: false
       }
+    });
+  };
+
+  /**
+   * Get a Post's exportable attributes
+   * @return {object} - the Post's attributes
+   */
+  Post.prototype.getExportableAttributes = function() {
+    return this.get();
+  };
+
+  /**
+   * Create a Post method and get its exportable Attributes
+   * @returns {Promise} - return Post's exportable attributes if entity created
+   * otherwhise rejects the error
+   */
+  Post.prototype.createAndGetAttributes = function() {
+    return new Promise((resolve, reject) => {
+      Post.create(this.get())
+        .then(post => {
+          return resolve(post.getExportableAttributes());
+        })
+        .catch(error => {
+          return reject(error);
+        });
     });
   };
   

@@ -4,6 +4,7 @@ const models = require('../models');
 const authenticationMiddleware = require('../middleware/token');
 const userIdentification = require('../helpers/userIdentification');
 const Post = models.posts;
+const Op = require('sequelize').Op;
 
 // Check for authentication token
 router.use(authenticationMiddleware);
@@ -50,13 +51,42 @@ router.put('/:id', function(req, res) {
 });
 
 router.get('/', function(req, res) {
-  Post.findAll()
+  const { location, title, difficulty } = req.query;
+
+  const searchQuery = {};
+
+  // Adapt search query according to passed location
+  if (location) {
+    searchQuery.location = {[Op.like]: `%${location}%`};
+  }
+
+  // Adapt search query according to given title
+  if (title) {
+    searchQuery.title = {[Op.like]: `%${title}%`};
+  }
+
+  // Adapt search query according to given difficulty
+  if (difficulty) {
+    searchQuery.difficulty = difficulty;
+  }
+  const query = {
+    limit: 10,
+    where: searchQuery
+  };
+
+  // get posts responding to search query, format response with posts's exportable attributes
+  // and send response
+  Post.findAll(query)
     .then(posts => {
-      console.log(posts);
-      const exportablesPosts = posts.map(post => post.getExportableAttributes());
-      res.json(exportablesPosts);
+      if (posts.length === 0) {
+        res.status(404).json({status:404, message: 'No post found according to this search.'});
+      }
+
+      const exportablePosts = posts.map(post => post.getExportableAttributes());
+      res.json(exportablePosts);
     })
-    .catch(error => res.status(400).json({status: 400, message: error}));
+    // IF nothing is found, return 404
+    .catch(error => res.status(400).json({status: 404, message: error}));
 });
 
 

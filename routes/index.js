@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const md5 = require('md5');
 const jwt = require('jsonwebtoken');
 const models = require('../models');
@@ -86,7 +86,7 @@ router.post('/signup', function(req, res) {
 
 function generateToken(jwt, user, secret) {
   return jwt.sign({
-    exp: Math.floor(Date.now() / 1000) + (60 * 60),
+    exp: Math.floor(Date.now() / 1000) + (60 * 60 * 3),
     username: user.username,
     userId: user.id
   }, secret);

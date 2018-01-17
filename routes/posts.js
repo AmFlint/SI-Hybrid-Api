@@ -22,5 +22,16 @@ router.post('/', function(req, res) {
     .catch(error => res.status(400).json({status: 400, error}));
 });
 
+router.get('/', function(req, res) {
+  Post.findAll()
+    .then(posts => {
+      console.log(posts);
+      const exportablesPosts = posts.map(post => post.getExportableAttributes());
+      res.json(exportablesPosts);
+    })
+    .catch(error => res.status(400).json({status: 400, message: error}));
+});
+
+
 
 module.exports = router;

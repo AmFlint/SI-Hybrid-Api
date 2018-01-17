@@ -3,7 +3,7 @@ const secret = require('../config/secret');
 
 module.exports = function(req, res, next) {
   // check header or url parameters or post parameters for token
-  var token = req.get('X-Access-Token');
+  const token = req.get('X-Access-Token');
 
   // decode token
   if (token) {

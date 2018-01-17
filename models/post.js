@@ -35,7 +35,17 @@ module.exports = (sequelize, DataTypes) => {
     difficulty: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defautValue: 1
+      defautValue: 1,
+      validate: {
+        min: {
+          args: 1,
+          msg: 'Minimum value for difficulty is 1.'
+        },
+        max: {
+          args: 5,
+          msg: 'Maximum value for difficulty is 5.'
+        }
+      }
     }
   });
 

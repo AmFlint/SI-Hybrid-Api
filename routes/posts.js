@@ -51,9 +51,9 @@ router.put('/:id', function(req, res) {
 });
 
 router.get('/', function(req, res) {
-  const { location, title, difficulty } = req.query;
+  const { location, title, difficulty, search } = req.query;
 
-  const searchQuery = {};
+  let searchQuery = {};
 
   // Adapt search query according to passed location
   if (location) {
@@ -69,6 +69,30 @@ router.get('/', function(req, res) {
   if (difficulty) {
     searchQuery.difficulty = difficulty;
   }
+
+  // If search query param is passed, reset searchQuery
+  if (search) {
+    searchQuery = {
+      [Op.or]: [
+        {
+          title: {
+            [Op.like]: `%${search}%`
+          }
+        },
+        {
+          location: {
+            [Op.like]: `%${search}%`
+          }
+        },
+        {
+          content: {
+            [Op.like]: `%${search}%`
+          }
+        }
+      ]
+    };
+  }
+
   const query = {
     limit: 10,
     where: searchQuery

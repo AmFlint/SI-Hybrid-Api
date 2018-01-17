@@ -72,12 +72,7 @@ router.post('/signup', function(req, res) {
   User.create(user)
     .then(user => {
       // If user is created, format exportable user's attributes
-      const exportableUser = {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        createdAt: user.createdAt
-      };
+      const exportableUser = user.getExportableAttributes();
       // Generate token for new user
       const token = generateToken(jwt, user, secret);
       // format response

@@ -58,6 +58,19 @@ module.exports = (sequelize, DataTypes) => {
     models.user.hasMany(models.posts);
   };
 
+  /**
+   * Get User's exportable attributes
+   * @returns {{id: *, username: *, email: *, createdAt: *}}
+   */
+  User.prototype.getExportableAttributes = function() {
+    return {
+      id: this.id,
+      username: this.username,
+      email: this.email,
+      createdAt: this.createdAt
+    }
+  };
+
   return User;
 };
 

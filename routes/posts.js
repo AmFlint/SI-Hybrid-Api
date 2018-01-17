@@ -17,9 +17,36 @@ router.post('/', function(req, res) {
   // Link post to authenticated user
   post.userId = userId;
   // Validate data, create a post and send either post's attributes or errors
-  Post.create(post.get())
-    .then(post => res.json(post.getExportableAttributes()))
-    .catch(error => res.status(400).json({status: 400, error}));
+  post.createAndGetAttributes()
+    .then(response => res.json(response))
+    .catch(err => res.status(400).json({message: err}));
+});
+
+router.put('/:id', function(req, res) {
+  // get Currently logged user's userId
+  const userId = userIdentification(req, res);
+
+  if (!req.params.id) {
+    res.status(400).json({status:400, message: 'Post id is required.'})
+  }
+
+  Post.find({where: {
+    id: req.params.id,
+    userId
+  }})
+    .then(post => {
+      return post;
+    })
+    .then(post => {
+      // Set values from request body, validate user input, update post
+      // and send back exportable attributes
+      post.update(req.body)
+        .then(updatedPost => res.json(updatedPost.getExportableAttributes()))
+        // Bad Request, validation failed
+        .catch(err => res.status(400).json({status: 400, message: err}));
+    })
+    // Post not found
+    .catch(err => res.status(404).json({status: 404, message: 'Post does not exist.'}));
 });
 
 router.get('/', function(req, res) {

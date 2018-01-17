@@ -113,6 +113,19 @@ router.get('/', function(req, res) {
     .catch(error => res.status(400).json({status: 404, message: error}));
 });
 
+router.get('/:id', function(req, res) {
+
+  Post.findOne({where: {id: req.params.id}})
+    .then(post => {
+      if (!post) {
+        res.status(404).json({status: 404, message: 'Post does not exist.'})
+      }
+
+      res.json(post.getExportableAttributes());
+    })
+    .catch(err => res.status(404).json({status: 500, message: 'Can not complete your request.'}));
+
+});
 
 
 module.exports = router;

@@ -4,6 +4,7 @@ const models = require('../models');
 const authenticationMiddleware = require('../middleware/token');
 const userIdentification = require('../helpers/userIdentification');
 const Post = models.posts;
+const User = models.user;
 const Op = require('sequelize').Op;
 
 // Check for authentication token
@@ -121,7 +122,15 @@ router.get('/:id', function(req, res) {
         res.status(404).json({status: 404, message: 'Post does not exist.'})
       }
 
-      res.json(post.getExportableAttributes());
+      const userId = post.userId;
+
+      User.findOne({where: {id: userId}})
+        .then(user => {
+          const exportableUser = {user: user.getExportableAttributes()};
+          const response = Object.assign({}, post.getExportableAttributes(), exportableUser);
+          res.json(response);
+        })
+        .catch(err => res.status(500).json({status:500, message: err}));
     })
     .catch(err => res.status(404).json({status: 500, message: 'Can not complete your request.'}));
 
